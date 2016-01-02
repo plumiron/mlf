@@ -18,7 +18,7 @@ class PLA(object):
         while not is_no_error:
             is_no_error = True
             for x, y in zip(X, Y):  # traverse samples
-                y_pred = self.predict(x)
+                y_pred = int(np.sign(np.dot(self.w, x))) or random.choice([-1, 1])
                 if y_pred != y:  # prediction error
                     self.w = self.w + y * x  # fix w
                     is_no_error = False  # need traverse one more time
@@ -27,11 +27,11 @@ class PLA(object):
             print 'After %d iterations, w = %s' % (it, str(self.w))
         print 'Best w = %s' % str(self.w)
 
-    def predict(self, x):
+    def predict(self, X):
         if self.w is None:  # not fit yet
             raise ValueError('You need fit data first.')
-        y_pred = np.sign(np.dot(self.w, x))
-        return y_pred or random.choice([-1, +1])
+        return np.array([int(np.sign(np.dot(self.w, x))) or random.choice([-1, 1])
+                         for x in X])
 
 
 def generate_samples(n_samples, n_features, w=None):
